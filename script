@@ -1,0 +1,110 @@
+CREATE DATABASE Almoxarifado;
+
+use Almoxarifado
+
+--Tabela de produtos
+CREATE TABLE produtos (
+    id_produto INT PRIMARY KEY IDENTITY(1,1),
+    nome VARCHAR(100) NOT NULL,
+    descricao TEXT,
+    quantidade INT NOT NULL,
+    preco DECIMAL(10, 2) NOT NULL,
+    data_cadastro DATETIME DEFAULT GETDATE()
+);
+
+--Tabela de fornecedores
+CREATE TABLE fornecedores (
+    id_fornecedor INT PRIMARY KEY IDENTITY(1,1),
+    nome VARCHAR(100) NOT NULL,
+    telefone VARCHAR(20),
+    email VARCHAR(100)
+);
+
+--Tabela de estoque
+CREATE TABLE estoque (
+    id_estoque INT PRIMARY KEY IDENTITY(1,1),
+    id_produto INT,
+    id_fornecedor INT,
+    quantidade INT NOT NULL,
+    data_entrada DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (id_produto) REFERENCES produtos(id_produto),
+    FOREIGN KEY (id_fornecedor) REFERENCES fornecedores(id_fornecedor)
+);
+
+--Tabela de clientes
+CREATE TABLE clientes (
+    id_cliente INT PRIMARY KEY IDENTITY(1,1),
+    nome VARCHAR(100) NOT NULL,
+    telefone VARCHAR(20),
+    endereco VARCHAR(200)
+);
+
+--Tabela de vendas
+CREATE TABLE vendas (
+    id_venda INT PRIMARY KEY IDENTITY(1,1),
+    id_cliente INT,
+    data_venda DATETIME DEFAULT GETDATE(),
+    valor_total DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (id_cliente) REFERENCES clientes(id_cliente)
+);
+
+--Tabela de itens de venda
+CREATE TABLE itens_venda (
+    id_item INT PRIMARY KEY IDENTITY(1,1),
+    id_venda INT,
+    id_produto INT,
+    quantidade INT NOT NULL,
+    preco_unitario DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (id_venda) REFERENCES vendas(id_venda),
+    FOREIGN KEY (id_produto) REFERENCES produtos(id_produto)
+);
+
+
+select *from produtos
+select *from fornecedores
+select *from estoque 
+select *from clientes
+select *from vendas
+select *from itens_venda
+
+--Tabela de produtos
+INSERT INTO produtos (nome, descricao, quantidade, preco, data_cadastro)
+VALUES 
+    ('Martelo', 'Martelo de metal com cabo de madeira', 50, 19.99, GETDATE()),
+    ('Chave de fenda', 'Chave de fenda Phillips', 100, 9.99, GETDATE()),
+    ('Parafuso', 'Parafuso de aço inoxidável', 200, 0.25, GETDATE());
+
+--Tabela de fornecedores
+INSERT INTO fornecedores (nome, telefone, email)
+VALUES 
+    ('Fornecedor A', '123-456-7890', 'fornecedorA@example.com'),
+    ('Fornecedor B', '987-654-3210', 'fornecedorB@example.com'),
+    ('Fornecedor C', '555-555-5555', 'fornecedorC@example.com');
+
+--Tabela de estoque 
+INSERT INTO estoque (id_produto, id_fornecedor, quantidade)
+VALUES 
+    (1, 1, 30),
+    (2, 2, 50),
+    (3, 3, 100);
+
+--Tabela de clientes
+INSERT INTO clientes (nome, telefone, endereco)
+VALUES 
+    ('Cliente A', '111-222-3333', 'Rua A, 123'),
+    ('Cliente B', '444-555-6666', 'Rua B, 456'),
+    ('Cliente C', '777-888-9999', 'Rua C, 789');
+
+--Tabela de vendas 
+INSERT INTO vendas (id_cliente, valor_total)
+VALUES 
+    (1, 50.00),
+    (2, 75.00),
+    (3, 100.00);
+
+--Tabela de itens de venda 
+INSERT INTO itens_venda (id_venda, id_produto, quantidade, preco_unitario)
+VALUES 
+    (1, 1, 2, 25.00),
+    (1, 2, 1, 15.00),
+    (2, 3, 4, 5.00);
